@@ -2,4 +2,8 @@
 /.vscode
 /flaskr.egg-info
 *.pyc
-.db
+*.db
+*.png
+*.gif
+*.jpg
+*.jpeg
