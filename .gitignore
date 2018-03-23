@@ -2,3 +2,4 @@
 /.vscode
 /flaskr.egg-info
 *.pyc
+.db
