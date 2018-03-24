@@ -1,8 +1,6 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
-from flask import Blueprint, request, session, g, redirect, url_for, abort, \
-     render_template, flash, current_app, Flask, send_file
-from werkzeug.utils import secure_filename
+from flask import request, redirect, Flask, g, send_file, current_app
 
 UPLOAD_FOLDER = 'flaskr'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -19,10 +17,6 @@ app.config.update(dict(
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# # create our blueprint :)
-# bp = Blueprint('flaskr', __name__)
-print(os.getenv('FLASK_APP'))
 
 def connect_db():
     """Connects to the specific database."""
@@ -57,44 +51,6 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
-# @app.route('/')
-# def show_entries():
-#     db = get_db()
-#     cur = db.execute('select title, text from entries order by id desc')
-#     entries = cur.fetchall()
-#     return render_template('show_entries.html', entries=entries)
-
-@app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    db = get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -108,10 +64,9 @@ def uploaded_file(filename):
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
-        print(file.filename)
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1]
-            filename = 'img.' + ext #secure_filename(file.filename)
+            filename = 'img.' + ext 
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             return send_file(filename)

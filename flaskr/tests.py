@@ -27,41 +27,14 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_connect(self):
         rv = self.app.get('/')
-        # print(rv, rv.data)
+        self.assertEqual(rv.status_code, 200)
 
     def test_img_upload(self):
         
-        print(os.getcwd(), os.listdir('.'))
         with open('img.test.png', 'rb') as img:
             rv = self.app.post('/', buffered=True, content_type='multipart/form-data', data={'file': img}, follow_redirects=True)
             self.assertEqual(rv.status_code, 200)
             self.assertIn('image', rv.content_type)
-
-    # def test_empty_db(self):
-    #     rv = self.app.get('/')
-    #     print(rv.data)
-    #     assert b'No entries here so far' in rv.data
-    
-    # def test_login_logout(self):
-    #     rv = self.login('admin', 'default')
-    #     assert b'You were logged in' in rv.data
-    #     rv = self.logout()
-    #     assert b'You were logged out' in rv.data
-    #     rv = self.login('adminx', 'default')
-    #     assert b'Invalid username' in rv.data
-    #     rv = self.login('admin', 'defaultx')
-    #     assert b'Invalid password' in rv.data
-
-    # def test_messages(self):
-    #     self.login('admin', 'default')
-    #     rv = self.app.post('/add', data=dict(
-    #         title='<Hello>',
-    #         text='<strong>HTML</strong> allowed here'
-    #     ), follow_redirects=True)
-    #     print(rv)
-    #     assert b'No entries here so far' not in rv.data
-    #     assert b'&lt;Hello&gt;' in rv.data
-    #     assert b'<strong>HTML</strong> allowed here' in rv.data
 
 if __name__ == '__main__':
     unittest.main()
