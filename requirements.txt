@@ -1,0 +1,7 @@
+click==6.7
+Flask==0.12.2
+-e git+git@github.com:Burlesque1/flask-login.git@bc7f2c35a739ad2d8d56ddca4830064a2bd77a3e#egg=flaskr
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0
+Werkzeug==0.14.1
