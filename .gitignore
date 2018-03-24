@@ -3,7 +3,3 @@
 /flaskr.egg-info
 *.pyc
 *.db
-*.png
-*.gif
-*.jpg
-*.jpeg

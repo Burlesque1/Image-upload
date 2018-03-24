@@ -108,18 +108,23 @@ def uploaded_file(filename):
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
+        print(file.filename)
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1]
             filename = 'img.' + ext #secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             return send_file(filename)
+        else:
+            return '''
+            <p>The file is not an image!</p> 
+            '''
     return '''
     <!doctype html>
     <title>Upload Image File</title>
     <h1>Upload Image File</h1>
     <form action="" method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
+      <p><input type=file name=file accept="image/*">
          <input type=submit value=Upload>
     </form>
     '''

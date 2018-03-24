@@ -31,12 +31,11 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_img_upload(self):
         
-        print(os.getcwd(), os.listdir())
-        with open('img.test', 'rb') as img:
+        print(os.getcwd(), os.listdir('.'))
+        with open('img.test.png', 'rb') as img:
             rv = self.app.post('/', buffered=True, content_type='multipart/form-data', data={'file': img}, follow_redirects=True)
-            print(rv.status_code, type(rv.data), rv.content_type)
             self.assertEqual(rv.status_code, 200)
-            self.assertIs(type(rv.data), bytes)
+            self.assertIn('image', rv.content_type)
 
     # def test_empty_db(self):
     #     rv = self.app.get('/')
