@@ -31,15 +31,9 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_img_upload(self):
         
-        # from werkzeug.test import EnvironBuilder
-        # builder = EnvironBuilder(path='/', method='POST')
-        # builder.files['file'] = 'img.test.png'
-        # print(builder.content_type)
-        # rv = self.app.open(builder)
-        
         with open('img.test.png', 'rb') as img:
             rv = self.app.post('/', buffered=True, content_type='multipart/form-data', data={'file': img}, follow_redirects=True)
-            # print(rv.status_code, type(rv.data))
+            print(rv.status_code, type(rv.data), rv.content_type)
             self.assertEqual(rv.status_code, 200)
             self.assertIs(type(rv.data), bytes)
 

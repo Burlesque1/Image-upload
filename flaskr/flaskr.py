@@ -113,7 +113,7 @@ def upload_file():
             filename = 'img.' + ext #secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            return send_file(filename, mimetype = 'image/' + ext)
+            return send_file(filename)
             # return  redirect(url_for('uploaded_file',
             #                         filename=filepath))
     return '''
