@@ -1,7 +1,11 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Blueprint, request, session, g, redirect, url_for, abort, \
-     render_template, flash, current_app, Flask
+     render_template, flash, current_app, Flask, send_file
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'flaskr'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -14,9 +18,8 @@ app.config.update(dict(
     PASSWORD='default'
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-# print(app.config)
 # # create our blueprint :)
 # bp = Blueprint('flaskr', __name__)
 print(os.getenv('FLASK_APP'))
@@ -54,12 +57,12 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
-@app.route('/')
-def show_entries():
-    db = get_db()
-    cur = db.execute('select title, text from entries order by id desc')
-    entries = cur.fetchall()
-    return render_template('show_entries.html', entries=entries)
+# @app.route('/')
+# def show_entries():
+#     db = get_db()
+#     cur = db.execute('select title, text from entries order by id desc')
+#     entries = cur.fetchall()
+#     return render_template('show_entries.html', entries=entries)
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -91,3 +94,34 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            ext = file.filename.rsplit('.', 1)[1]
+            filename = 'img.' + ext #secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            return send_file(filename, mimetype = 'image/' + ext)
+            # return  redirect(url_for('uploaded_file',
+            #                         filename=filepath))
+    return '''
+    <!doctype html>
+    <title>Upload Image File</title>
+    <h1>Upload Image File</h1>
+    <form action="" method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+    '''
