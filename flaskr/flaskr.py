@@ -114,8 +114,6 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             return send_file(filename)
-            # return  redirect(url_for('uploaded_file',
-            #                         filename=filepath))
     return '''
     <!doctype html>
     <title>Upload Image File</title>
