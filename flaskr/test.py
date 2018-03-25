@@ -27,7 +27,7 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_connect(self):
         rv = self.app.get('/')
-        self.assertEqual(rv.status_code, 200)
+        self.assertEqual(rv.status_code, 400)
 
     def test_img_upload(self):
         
